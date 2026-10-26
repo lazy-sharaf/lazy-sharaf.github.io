@@ -15,7 +15,7 @@ export function DisclosureRecord() {
               <br />
               by the
               <br />
-              <span className="text-bone/84">institutions.</span>
+              <span className="text-signal">Top organisations.</span>
             </h2>
             <p className="body mt-6 max-w-sm">
               These are the ones that put their name to it. Others received the report

@@ -12,7 +12,7 @@ export function Competitions() {
             <h2 className="h2">
               Measured
               <br />
-              <span className="text-bone/84">against the</span>
+              <span className="text-signal">against the</span>
               <br />
               <span className="text-bone/84">field.</span>
             </h2>

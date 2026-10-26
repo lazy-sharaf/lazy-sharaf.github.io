@@ -15,7 +15,7 @@ export function IndexSection() {
               <br />
               where to
               <br />
-              <span className="text-bone/84">dive in.</span>
+              <span className="text-signal">dive in.</span>
             </h2>
             <p className="body mt-6 max-w-xs">
               Seven directories. Each one opens where it lives on the page.

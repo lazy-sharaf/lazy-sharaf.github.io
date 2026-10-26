@@ -13,7 +13,7 @@ export function About() {
             <h2 className="h2">
               Breaking
               <br />
-              things
+              <span className="text-signal">things</span>
               <br />
               <span className="text-bone/84">responsibly.</span>
             </h2>

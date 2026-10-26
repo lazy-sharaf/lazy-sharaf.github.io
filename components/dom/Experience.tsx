@@ -13,7 +13,7 @@ export function Experience() {
             <h2 className="h2">
               Where
               <br />
-              <span className="text-bone/84">I&rsquo;ve been.</span>
+              <span className="text-signal">I&rsquo;ve been.</span>
             </h2>
           </div>
 

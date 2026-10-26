@@ -11,7 +11,7 @@ export function Ethics() {
           <div className="md:col-span-4">
             <p className="prompt mb-5">cat ethics.md</p>
             <h2 className="h2">
-              Proof,
+              <span className="text-signal">Proof,</span>
               <br />
               <span className="text-bone/84">not possession.</span>
             </h2>

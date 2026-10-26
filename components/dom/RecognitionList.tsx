@@ -24,7 +24,7 @@ export function RecognitionList() {
               </span>
 
               <span className="min-w-0">
-                <span className="block truncate text-base text-bone/95 transition-colors group-hover:text-bone sm:text-lg">
+                <span className="block truncate text-base text-signal transition-colors group-hover:text-bone sm:text-lg">
                   {entry.org}
                 </span>
                 <span className="mono-sm mt-1 block text-bone/60 sm:hidden">

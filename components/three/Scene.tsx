@@ -30,6 +30,25 @@ const WAYPOINTS = [
   [0, 2.4, -142],
 ] as const;
 
+/**
+ * A portrait viewport with a 55° vertical FOV only sees ~27° horizontally,
+ * which crops the city to a sliver. Widen the vertical FOV as the frame
+ * gets taller so the street still reads on a phone.
+ */
+function AdaptiveFov() {
+  const camera = useThree((state) => state.camera);
+  const size = useThree((state) => state.size);
+
+  useEffect(() => {
+    const aspect = size.width / Math.max(size.height, 1);
+    const fov = aspect < 0.7 ? 84 : aspect < 1.05 ? 72 : aspect < 1.45 ? 62 : 55;
+    (camera as THREE.PerspectiveCamera).fov = fov;
+    camera.updateProjectionMatrix();
+  }, [camera, size]);
+
+  return null;
+}
+
 function CameraRig() {
   const { camera } = useThree();
 
@@ -72,7 +91,12 @@ function CameraRig() {
       THREE.MathUtils.clamp((pos.current.y - 2.6) / 31, 0, 1) * 16 +
       coastAt(pos.current.z) * 0.7;
 
-    camera.lookAt(look.current.x, look.current.y - drop, look.current.z);
+    // portrait frames would otherwise be half empty road — lift the aim so the
+    // skyline fills the lower half instead
+    const aspect = state.size.width / Math.max(state.size.height, 1);
+    const lift = aspect < 0.8 ? 3.4 : 0;
+
+    camera.lookAt(look.current.x, look.current.y - drop + lift, look.current.z);
   });
 
   return null;
@@ -132,6 +156,7 @@ export default function Scene() {
     >
       <Atmosphere />
       <Sky />
+      <AdaptiveFov />
       <CameraRig />
       <Ground lightPos={lightPos} />
       <City density={density} />

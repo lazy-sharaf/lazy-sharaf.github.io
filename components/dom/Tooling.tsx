@@ -20,7 +20,7 @@ export function Tooling() {
               <br />
               to look
               <br />
-              <span className="text-bone/84">closer.</span>
+              <span className="text-signal">closer.</span>
             </h2>
           </div>
 

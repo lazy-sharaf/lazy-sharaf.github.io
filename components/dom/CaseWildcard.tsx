@@ -4,6 +4,11 @@ import { InlineCode } from "@/components/ui/InlineCode";
 import { SectionHead } from "./SectionHead";
 
 export function CaseWildcard() {
+  // last word of the headline carries the accent
+  const split = featuredCase.codename.lastIndexOf(" ");
+  const head = featuredCase.codename.slice(0, split);
+  const tail = featuredCase.codename.slice(split + 1);
+
   return (
     <section id="case" className="section">
       <div className="shell">
@@ -17,7 +22,7 @@ export function CaseWildcard() {
             </p>
 
             <h2 className="h2">
-              {featuredCase.codename}
+              {head} <span className="text-signal">{tail}</span>
               <span className="signal">.</span>
             </h2>
 

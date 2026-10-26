@@ -30,7 +30,7 @@ function RowContent({ entry }: { entry: Credential }) {
       </span>
 
       <span className="min-w-0">
-        <span className="block text-sm text-bone/93 transition-colors group-hover:text-bone sm:text-base">
+        <span className="block text-sm text-signal transition-colors group-hover:text-bone sm:text-base">
           {entry.name}
         </span>
         <span className="mono-sm mt-1 block text-bone/60 sm:hidden">{entry.issuer}</span>

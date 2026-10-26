@@ -1195,3 +1195,35 @@ section[id] {
   white-space: nowrap;
   border-width: 0;
 }
+
+/* ── Scene overlays ───────────────────────────────────── */
+
+.scene-veil {
+  background: rgba(10, 10, 12, 0.24);
+}
+
+.scene-scrim {
+  background: linear-gradient(
+    90deg,
+    rgba(16, 16, 18, 0.88) 0%,
+    rgba(16, 16, 18, 0.64) 34%,
+    rgba(16, 16, 18, 0.34) 64%,
+    rgba(16, 16, 18, 0.5) 100%
+  );
+}
+
+/* portrait: the desktop scrim would black out the whole frame */
+@media (max-width: 767px) {
+  .scene-veil {
+    background: rgba(10, 10, 12, 0.1);
+  }
+
+  .scene-scrim {
+    background: linear-gradient(
+      180deg,
+      rgba(16, 16, 18, 0.28) 0%,
+      rgba(16, 16, 18, 0.42) 45%,
+      rgba(16, 16, 18, 0.78) 100%
+    );
+  }
+}

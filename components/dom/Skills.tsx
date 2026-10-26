@@ -13,7 +13,7 @@ export function Skills() {
             <h2 className="h2">
               The
               <br />
-              <span className="text-bone/84">toolkit.</span>
+              <span className="text-signal">toolkit.</span>
             </h2>
             <p className="body mt-6 max-w-xs">
               What I reach for on an engagement, and what I am reading when nothing is
@@ -34,15 +34,15 @@ export function Skills() {
                       <h3 className="text-base text-bone/95 transition-colors group-hover:text-bone sm:text-lg">
                         {group.group}
                       </h3>
-                      <p className="mt-2 text-sm leading-relaxed text-bone/74">
+                      <p className="mt-2 text-sm leading-relaxed">
                         {group.items.map((item, j) => (
                           <span key={item}>
                             {j > 0 && (
-                              <span className="text-signal/40" aria-hidden="true">
+                              <span className="text-bone/25" aria-hidden="true">
                                 {" · "}
                               </span>
                             )}
-                            {item}
+                            <span className="text-signal">{item}</span>
                           </span>
                         ))}
                       </p>

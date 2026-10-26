@@ -10,9 +10,9 @@ export function Contact() {
         <div className="grid gap-12 md:grid-cols-12">
           <div className="md:col-span-7">
             <h2 className="h2">
-              Have an attack
+              Have an <span className="text-signal">attack</span>
               <br />
-              surface worth
+              <span className="text-signal">surface</span> worth
               <br />
               <span className="text-bone/84">testing?</span>
             </h2>

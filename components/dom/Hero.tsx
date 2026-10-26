@@ -5,7 +5,7 @@ export function Hero() {
   return (
     <section
       id="hero"
-      className="relative flex min-h-[100svh] flex-col justify-end overflow-hidden pt-24 pb-16 sm:pt-28 sm:pb-20 md:justify-center"
+      className="relative flex flex-col overflow-hidden pt-24 pb-16 sm:pt-28 sm:pb-20 md:min-h-[100svh] md:justify-center"
     >
       <div className="shell">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-12">

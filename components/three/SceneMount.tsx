@@ -50,17 +50,8 @@ export function SceneMount() {
       }}
     >
       {enabled && ready && <Scene />}
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{ background: "rgba(10, 10, 12, 0.24)" }}
-      />
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "linear-gradient(90deg, rgba(16,16,18,0.88) 0%, rgba(16,16,18,0.64) 34%, rgba(16,16,18,0.34) 64%, rgba(16,16,18,0.5) 100%)",
-        }}
-      />
+      <div className="scene-veil pointer-events-none absolute inset-0" />
+      <div className="scene-scrim pointer-events-none absolute inset-0" />
     </div>
   );
 }

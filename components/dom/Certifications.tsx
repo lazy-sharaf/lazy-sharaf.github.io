@@ -13,7 +13,7 @@ export function Certifications() {
             <h2 className="h2">
               Certified.
               <br />
-              <span className="text-bone/84">Still reading</span>
+              <span className="text-signal">Still reading</span>
               <br />
               <span className="text-bone/84">source.</span>
             </h2>
