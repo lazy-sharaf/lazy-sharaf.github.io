@@ -279,16 +279,16 @@ export function Chrome() {
 
       <div className="fixed inset-x-0 bottom-0 z-50 pointer-events-none">
         <div className="shell flex items-end justify-between pb-5">
-          <div className="mono-sm flex items-center gap-2 text-bone/58">
+          <div className="mono-sm flex items-center gap-2 text-bone/74">
             <span className="tabular w-8">{Math.round(progress)}%</span>
             <span className="progress-track" aria-hidden="true">
               <span className="progress-fill" style={{ width: `${progress}%` }} />
             </span>
-            <span className="hidden text-bone/55 sm:inline">~/soraf</span>
+            <span className="hidden text-bone/70 sm:inline">~/soraf</span>
           </div>
           <a
             href="#contact"
-            className="mono-sm pointer-events-auto text-bone/65 hover:text-signal transition-colors"
+            className="mono-sm pointer-events-auto text-bone/80 hover:text-signal transition-colors"
           >
             ↓ contact
           </a>

@@ -29,7 +29,7 @@ export default function CaseWildcard() {
       <div className="shell">
         <Link
           href="/"
-          className="mono-sm text-bone/68 transition-colors hover:text-signal"
+          className="mono-sm text-bone/84 transition-colors hover:text-signal"
         >
           ← index
         </Link>
@@ -40,7 +40,7 @@ export default function CaseWildcard() {
 
           <h1 className="mt-5 max-w-4xl text-[clamp(2.25rem,6vw,4.5rem)] font-medium leading-[0.95] tracking-[-0.04em]">
             How a wildcard subscription read{" "}
-            <span className="text-bone/68">ten strangers&rsquo; conversations</span> in
+            <span className="text-bone/84">ten strangers&rsquo; conversations</span> in
             three minutes.
           </h1>
 
@@ -58,8 +58,8 @@ export default function CaseWildcard() {
               ["Outcome", "First 4-digit bounty"],
             ].map(([k, v]) => (
               <div key={k}>
-                <dt className="mono-sm text-bone/62">{k}</dt>
-                <dd className="mt-2 text-sm text-bone/88">{v}</dd>
+                <dt className="mono-sm text-bone/78">{k}</dt>
+                <dd className="mt-2 text-sm text-bone/93">{v}</dd>
               </div>
             ))}
           </dl>
@@ -68,15 +68,15 @@ export default function CaseWildcard() {
         <div className="mt-16 grid gap-12 lg:grid-cols-12">
           <aside className="hidden lg:col-span-3 lg:block">
             <nav aria-label="Contents" className="sticky top-28">
-              <p className="mono-sm mb-4 text-bone/58">Contents</p>
+              <p className="mono-sm mb-4 text-bone/74">Contents</p>
               <ol className="space-y-2.5">
                 {sections.map((s, i) => (
                   <li key={s.id}>
                     <a
                       href={`#${s.id}`}
-                      className="group flex gap-3 text-sm text-bone/68 transition-colors hover:text-bone"
+                      className="group flex gap-3 text-sm text-bone/84 transition-colors hover:text-bone"
                     >
-                      <span className="mono-sm pt-0.5 text-bone/55 group-hover:text-signal">
+                      <span className="mono-sm pt-0.5 text-bone/70 group-hover:text-signal">
                         {String(i + 1).padStart(2, "0")}
                       </span>
                       {s.label}
@@ -321,33 +321,33 @@ setTimeout(()=>process.exit(),60000)"`}</code>
             </p>
 
             <div className="mt-16 border-t border-bone/10 pt-8">
-              <p className="mono-sm text-bone/62">
+              <p className="mono-sm text-bone/78">
                 Originally published on{" "}
                 <a
                   href="https://medium.com/@lazysharaf/how-i-hacked-a-live-chatbot-and-earned-my-first-4-digit-bounty-5c43c8891741"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-bone/78 underline decoration-bone/20 underline-offset-4 transition-colors hover:text-signal"
+                  className="text-bone/88 underline decoration-bone/20 underline-offset-4 transition-colors hover:text-signal"
                 >
                   Medium
                 </a>
                 , 3 June 2026. Target details redacted. No customer data retained.
               </p>
-              <p className="mono-sm mt-3 text-bone/58">
-                Thanks to <span className="text-bone/72">@emptymahbob</span>.
+              <p className="mono-sm mt-3 text-bone/74">
+                Thanks to <span className="text-bone/86">@emptymahbob</span>.
               </p>
             </div>
 
             <div className="mt-16 flex flex-wrap items-center gap-6">
               <Link
                 href="/"
-                className="mono text-bone/78 transition-colors hover:text-signal"
+                className="mono text-bone/88 transition-colors hover:text-signal"
               >
                 ← back to index
               </Link>
               <a
                 href={`mailto:${site.email}`}
-                className="mono text-bone/78 transition-colors hover:text-signal"
+                className="mono text-bone/88 transition-colors hover:text-signal"
               >
                 {site.email}
               </a>

@@ -9,30 +9,38 @@ export const site = {
   handle: "lazysharaf",
   role: "Security Researcher",
   subRole: "Penetration Tester · Bug Bounty Hunter",
-  location: "Savar, Dhaka, Bangladesh",
+  location: "Dhaka, Bangladesh",
   domain: "sharaf.ninja",
   url: "https://sharaf.ninja",
   year: 2026,
   tagline: "Boring recon wins.",
   status: "Breaking things responsibly since 2022.",
   intro:
-    "I look for what was already public. Eight organisations have received disclosures from me — WHO, UNESCO, UNICEF and the U.S. Department of Education among them. The bugs were never exotic. Nobody had looked.",
+    "Finding what shouldn’t exist. Security researcher working on web application security and real-world vulnerability discovery — UNESCO, the World Health Organization, UNICEF and the U.S. Department of Education among those disclosed to.",
+  introLead: "Finding what",
+  introAccent: "shouldn’t exist.",
+  introBody:
+    "Most of what I find never gets a logo. The names on this page are the organisations reputable enough to say it publicly — the rest of the work stays quiet. None of the bugs were exotic. Nobody had looked.",
   about:
-    "Security researcher with a focus on web application security and real-world vulnerability discovery. I have responsibly disclosed vulnerabilities to international organisations including UNESCO, WHO, UNICEF, Adyen, the U.S. Department of Education, the University of York and the University of Sheffield.",
+    "Security researcher working on web application security and real-world vulnerability discovery. I report what I find to the organisations that own it — UNESCO, the World Health Organization, UNICEF, Adyen, the U.S. Department of Education, the University of York, the University of Sheffield and Utrecht University among them.",
   aboutSecond:
-    "My work concentrates on web-based attack vectors — authentication flaws, broken access control, misconfigurations and business logic. I write findings the way I would want to receive them: reproducible, scoped, and with remediation an engineer can act on.",
+    "Day to day that means penetration testing, security research and vulnerability assessment, concentrated on web-based attack vectors: authentication flaws, broken access control, misconfiguration and business logic. I write findings the way I would want to receive them — reproducible, clearly scoped, and with remediation an engineer can act on.",
   aboutTags: [
     "Penetration testing",
-    "Bug bounty",
-    "CTF player",
+    "Vulnerability assessment",
     "Security research",
     "Responsible disclosure",
+    "Bug bounty",
+    "CTF player",
   ],
   email: "mahbuburrahmansoraf@gmail.com",
-  github: "https://github.com/lazysharaf",
-  githubLabel: "github.com/lazysharaf",
+  github: "https://github.com/lazy-sharaf",
+  githubLabel: "github.com/lazy-sharaf",
   medium: "https://medium.com/@lazysharaf",
   mediumLabel: "medium.com/@lazysharaf",
+  linkedin: "https://linkedin.com/in/lazysharaf",
+  x: "https://x.com/lazy_sharaf",
+  facebook: "https://facebook.com/lazysharaf",
   /**
    * PGP — placeholder until a key is supplied.
    * The Contact section renders a "key not published" state rather than faking a fingerprint.
@@ -60,7 +68,7 @@ export type CaseStudy = {
 
 export const featuredCase: CaseStudy = {
   id: "CASE 001",
-  codename: "THE WILDCARD",
+  codename: "How I Hacked a Live Chatbot",
   target: "Live customer support chatbot",
   program: "Private HackerOne program",
   severity: "Critical",
@@ -81,31 +89,69 @@ export type Recognition = {
   short: string;
   year: string;
   kind: string;
+  image: string;
+  note: string;
 };
 
 export const recognitions: Recognition[] = [
-  { org: "World Health Organization", short: "WHO", year: "2024", kind: "Hall of Fame" },
-  { org: "UNESCO", short: "UNESCO", year: "2024", kind: "Hall of Fame" },
-  { org: "UNICEF", short: "UNICEF", year: "2024", kind: "Hall of Fame" },
+  {
+    org: "World Health Organization",
+    short: "WHO",
+    year: "2024",
+    kind: "Hall of Fame",
+    image: "/recognitions/who.jpeg",
+    note: "Listed on the WHO Vulnerability Hall of Fame for an information disclosure on a WHO subdomain.",
+  },
+  {
+    org: "UNESCO",
+    short: "UNESCO",
+    year: "2024",
+    kind: "Hall of Fame",
+    image: "/recognitions/unesco.jpeg",
+    note: "Named on the UNESCO Hall of Fame for a security misconfiguration affecting a UNESCO domain.",
+  },
+  {
+    org: "UNICEF",
+    short: "UNICEF",
+    year: "2024",
+    kind: "Hall of Fame",
+    image: "/recognitions/unicef.png",
+    note: "Credited on the UNICEF Hall of Fame for an information disclosure report.",
+  },
   {
     org: "U.S. Department of Education",
     short: "U.S. DEPT OF EDUCATION",
     year: "2024",
     kind: "Certificate of Recognition",
+    image: "/recognitions/usedu.jpeg",
+    note: "Certificate of Recognition for reporting and responsibly disclosing exploitable vulnerabilities.",
   },
-  { org: "University of Sheffield", short: "UNIV. OF SHEFFIELD", year: "2024", kind: "Hall of Fame" },
-  { org: "University of York", short: "UNIV. OF YORK", year: "2024", kind: "Hall of Fame" },
+  {
+    org: "University of Sheffield",
+    short: "UNIV. OF SHEFFIELD",
+    year: "2024",
+    kind: "Hall of Fame",
+    image: "/recognitions/sheffield.png",
+    note: "Acknowledged by University of Sheffield IT Services for a security report.",
+  },
+  {
+    org: "University of York",
+    short: "UNIV. OF YORK",
+    year: "2024",
+    kind: "Hall of Fame",
+    image: "/recognitions/york.png",
+    note: "Listed in the University of York credits for helping with vulnerability reports.",
+  },
 ];
 
 /** Disclosed to, but with no public recognition listed on the CV. */
 export const additionalDisclosures = ["Adyen", "Utrecht University"];
 
 export const numbers = [
-  { value: "08", label: "organisations disclosed to" },
   { value: "545", label: "teams at BDSec CTF 2026", sub: "placed 2nd" },
-  { value: "05", label: "CTF & competition results" },
+  { value: "06", label: "CTF & competition results" },
   { value: "03", label: "tools built and released" },
-  { value: "06", label: "certifications" },
+  { value: "08", label: "certifications" },
 ];
 
 /**
@@ -175,6 +221,12 @@ export type Competition = {
 };
 
 export const competitions: Competition[] = [
+  {
+    year: "2026",
+    name: "BCS ICT Fest CTF",
+    result: "15th",
+    detail: "Team position worldwide",
+  },
   {
     year: "2026",
     name: "BDSec CTF",
@@ -276,15 +328,62 @@ export type Credential = {
   name: string;
   issuer: string;
   year: string;
+  image?: string;
+  note?: string;
 };
 
 export const credentials: Credential[] = [
-  { name: "Certified AppSec Practitioner v2", issuer: "The SecOps Group", year: "2024" },
-  { name: "Certified Network Security Practitioner", issuer: "The SecOps Group", year: "2024" },
-  { name: "Google Cybersecurity Professional Certificate", issuer: "Coursera", year: "2025" },
-  { name: "Certified API Hacking Junior", issuer: "The XSS Rat", year: "2025" },
-  { name: "Certified Cybersecurity Educator Professional", issuer: "Red Team Leaders", year: "2025" },
-  { name: "Certified Web App Pentesting Apprentice", issuer: "Knight Squad Academy", year: "2026" },
+  {
+    name: "Certified API Security Analyst (CASA)",
+    issuer: "APIsec University",
+    year: "2026",
+    image: "/certs/casa.jpeg",
+    note: "Awarded 09 October 2026. Examination administered by APIsec University.",
+  },
+  {
+    name: "APIsec Certified Practitioner (ACP)",
+    issuer: "APIsec University",
+    year: "2026",
+    image: "/certs/acp.jpeg",
+    note: "Awarded 11 October 2026. Examination administered by APIsec University.",
+  },
+  {
+    name: "Certified AppSec Practitioner v2",
+    issuer: "The SecOps Group",
+    year: "2024",
+    image: "/certs/cap.png",
+  },
+  {
+    name: "Certified Network Security Practitioner",
+    issuer: "The SecOps Group",
+    year: "2024",
+    image: "/certs/cnsp.png",
+  },
+  {
+    name: "Google Cybersecurity Professional Certificate",
+    issuer: "Coursera",
+    year: "2025",
+    image: "/certs/google.jpeg",
+    note: "Eight-course professional certificate delivered through Coursera.",
+  },
+  {
+    name: "Certified API Hacking Junior",
+    issuer: "The XSS Rat",
+    year: "2025",
+    image: "/certs/capij.png",
+  },
+  {
+    name: "Certified Cybersecurity Educator Professional",
+    issuer: "Red Team Leaders",
+    year: "2025",
+    image: "/certs/ccep.png",
+  },
+  {
+    name: "Certified Web App Pentesting Apprentice",
+    issuer: "Knight Squad Academy",
+    year: "2026",
+    image: "/certs/kwapta.png",
+  },
 ];
 
 export type Experience = {
@@ -323,7 +422,7 @@ export const education = {
 };
 
 export const ethicsQuote = {
-  quote: "I let it run for three minutes, then I stopped. I did not need to hoard data.",
+  quote: "I stopped once the flaw was proven. Everything past that point was someone else’s data.",
   attribution: "Case 001",
 };
 
@@ -341,17 +440,10 @@ export type IndexEntry = {
  */
 export const indexEntries: IndexEntry[] = [
   {
-    path: "~/case-001",
-    title: "The Wildcard",
-    note: "Critical MQTT authorisation flaw · first 4-digit bounty",
-    count: "01 entry",
-    href: "#case",
-  },
-  {
     path: "~/recognition",
     title: "Recognition",
     note: "WHO · UNESCO · UNICEF · U.S. DoE · Sheffield · York",
-    count: "06 entries",
+    count: "08 entries",
     href: "#record",
   },
   {
@@ -364,15 +456,15 @@ export const indexEntries: IndexEntry[] = [
   {
     path: "~/ctf",
     title: "CTF & competitions",
-    note: "BDSec 2026 · HackerOne Bug Hunt · Bugcrowd Cup",
-    count: "05 results",
+    note: "BCS ICT Fest 2026 · BDSec 2026 · Bugcrowd Cup",
+    count: "06 results",
     href: "#competitions",
   },
   {
     path: "~/certs",
     title: "Certifications",
-    note: "SecOps Group · The XSS Rat · Knight Squad Academy",
-    count: "06 entries",
+    note: "APIsec University · SecOps Group · The XSS Rat",
+    count: "08 entries",
     href: "#certifications",
   },
   {
@@ -388,6 +480,13 @@ export const indexEntries: IndexEntry[] = [
     note: "Disclosure practice, and the discipline of stopping",
     count: "01 note",
     href: "#ethics",
+  },
+  {
+    path: "~/case-001",
+    title: "The Wildcard",
+    note: "Critical MQTT authorisation flaw · first 4-digit bounty",
+    count: "01 entry",
+    href: "#case",
   },
 ];
 
@@ -408,12 +507,12 @@ export const sections: Section[] = [
   { id: "about", label: "About", number: "01", path: "~/about" },
   { id: "skills", label: "Skills", number: "02", path: "~/skills" },
   { id: "record", label: "Recognition", number: "03", path: "~/record" },
-  { id: "case", label: "Case 001", number: "04", path: "~/case/001" },
-  { id: "tooling", label: "Projects", number: "05", path: "~/bin" },
-  { id: "competitions", label: "CTF", number: "06", path: "~/ctf" },
-  { id: "certifications", label: "Certifications", number: "07", path: "~/certs" },
-  { id: "experience", label: "Experience", number: "08", path: "~/cv" },
-  { id: "ethics", label: "Ethics", number: "09", path: "~/ethics" },
+  { id: "tooling", label: "Projects", number: "04", path: "~/bin" },
+  { id: "competitions", label: "CTF", number: "05", path: "~/ctf" },
+  { id: "certifications", label: "Certifications", number: "06", path: "~/certs" },
+  { id: "experience", label: "Experience", number: "07", path: "~/cv" },
+  { id: "ethics", label: "Ethics", number: "08", path: "~/ethics" },
+  { id: "case", label: "Writeup", number: "09", path: "~/writeup" },
   { id: "contact", label: "Contact", number: "10", path: "~/contact" },
 ];
 

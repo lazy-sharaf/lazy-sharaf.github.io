@@ -52,7 +52,7 @@ export function Loader() {
     >
       <div className="w-[min(22rem,80vw)]">
         <div className="mb-6 flex items-baseline justify-between">
-          <span className="mono text-bone/72">TLS 1.3</span>
+          <span className="mono text-bone/86">TLS 1.3</span>
           <span className="mono-sm text-signal">handshake</span>
         </div>
 
@@ -71,7 +71,7 @@ export function Loader() {
               style={{ opacity: i < step ? 1 : 0.18 }}
             >
               <span className="text-signal">›</span>
-              <span className="text-bone/78">{label}</span>
+              <span className="text-bone/88">{label}</span>
             </li>
           ))}
         </ul>

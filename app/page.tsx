@@ -1,4 +1,5 @@
 import { Hero } from "@/components/dom/Hero";
+import { Preface } from "@/components/dom/Preface";
 import { IndexSection } from "@/components/dom/IndexSection";
 import { About } from "@/components/dom/About";
 import { Skills } from "@/components/dom/Skills";
@@ -12,24 +13,24 @@ import { Ethics } from "@/components/dom/Ethics";
 import { Contact } from "@/components/dom/Contact";
 
 /**
- * Section order follows the previous portfolio:
- * hero → index → about → skills → recognition → work → ctf → certs → experience.
- * Case 001 is the one insertion — it sits where "featured work" belongs.
+ * Section order: hero → index → about → skills → recognition → projects → ctf
+ * → certs → experience → ethics → writeup → contact.
  */
 export default function Home() {
   return (
     <>
       <Hero />
+      <Preface />
       <IndexSection />
       <About />
       <Skills />
       <DisclosureRecord />
-      <CaseWildcard />
       <Tooling />
       <Competitions />
       <Certifications />
       <Experience />
       <Ethics />
+      <CaseWildcard />
       <Contact />
     </>
   );

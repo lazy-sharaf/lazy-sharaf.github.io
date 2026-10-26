@@ -5,16 +5,19 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Bloom, EffectComposer, Vignette } from "@react-three/postprocessing";
 import * as THREE from "three";
 import { scrollState } from "@/lib/scroll";
-import { Archive } from "./Archive";
-import { Floor } from "./Floor";
+import { coastAt } from "@/lib/coast";
+import { City } from "./City";
+import { Crabs } from "./Crabs";
+import { Ground } from "./Ground";
+import { Shore } from "./Shore";
+import { Sky } from "./Sky";
 
 type Tier = "high" | "low" | "static";
 
 /**
- * The flight path. Not a straight dolly: it climbs out of the corridor,
- * clears the monoliths, looks down into the canyon, then dives back to
- * street level. Vertical variation is what makes the space read as
- * architecture rather than a hallway.
+ * The flight path. It climbs out of the city, clears the towers, looks
+ * down into the canyon, then drops back to the road — and keeps going
+ * until the buildings run out and the road becomes sand.
  */
 const WAYPOINTS = [
   [0, 2.6, 6],
@@ -63,10 +66,38 @@ function CameraRig() {
       look.current.addScaledVector(path.getTangentAt(1), 6);
     }
 
-    // the higher we are, the further down we look, so the canyon stays in frame
-    const drop = THREE.MathUtils.clamp((pos.current.y - 2.6) / 31, 0, 1) * 16;
+    // the higher we are, the further down we look, so the canyon stays in frame.
+    // at the coast we tilt into the water instead, to give the sea some room.
+    const drop =
+      THREE.MathUtils.clamp((pos.current.y - 2.6) / 31, 0, 1) * 16 +
+      coastAt(pos.current.z) * 0.7;
 
     camera.lookAt(look.current.x, look.current.y - drop, look.current.z);
+  });
+
+  return null;
+}
+
+/** Fog and clear colour follow the coast so distance never seams. */
+function Atmosphere() {
+  const { scene, gl, camera } = useThree();
+  const night = useMemo(() => new THREE.Color("#17161a"), []);
+  const dusk = useMemo(() => new THREE.Color("#2b2330"), []);
+
+  useEffect(() => {
+    scene.fog = new THREE.FogExp2(0x17161a, 0.014);
+    return () => {
+      scene.fog = null;
+    };
+  }, [scene]);
+
+  useFrame(() => {
+    const coast = coastAt(camera.position.z);
+    const fog = scene.fog as THREE.FogExp2 | null;
+    if (fog) {
+      fog.color.lerpColors(night, dusk, coast);
+      gl.setClearColor(fog.color, 1);
+    }
   });
 
   return null;
@@ -95,27 +126,27 @@ export default function Scene() {
         stencil: false,
         powerPreference: "high-performance",
       }}
-      camera={{ position: [0, 2.7, 6], fov: 55, near: 0.1, far: 240 }}
+      camera={{ position: [0, 2.7, 6], fov: 55, near: 0.1, far: 900 }}
       style={{ pointerEvents: "none" }}
       frameloop={tier === "static" ? "demand" : "always"}
-      onCreated={({ gl, scene }) => {
-        gl.setClearColor(new THREE.Color("#0a0a0b"), 1);
-        scene.fog = new THREE.FogExp2(0x0a0a0b, 0.018);
-      }}
     >
+      <Atmosphere />
+      <Sky />
       <CameraRig />
-      <Floor lightPos={lightPos} />
-      <Archive density={density} intensity={1} lightPos={lightPos} />
+      <Ground lightPos={lightPos} />
+      <City density={density} />
+      <Shore />
+      <Crabs />
 
       {high && (
         <EffectComposer>
           <Bloom
-            intensity={0.7}
+            intensity={0.55}
             luminanceThreshold={0.22}
             luminanceSmoothing={0.35}
             mipmapBlur
           />
-          <Vignette offset={0.22} darkness={0.82} eskil={false} />
+          <Vignette offset={0.22} darkness={0.55} eskil={false} />
         </EffectComposer>
       )}
     </Canvas>

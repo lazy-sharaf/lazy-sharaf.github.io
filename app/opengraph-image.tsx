@@ -85,7 +85,7 @@ export default function OpengraphImage() {
               color: "rgba(232,228,220,0.4)",
             }}
           >
-            08 organisations · 06 recognitions
+            responsible disclosure · security research
           </span>
         </div>
       </div>

@@ -21,11 +21,11 @@ export function SectionHead({
       </span>
       <span className="section-index tabular">
         {index}
-        <span className="text-bone/55">/{total}</span>
+        <span className="text-bone/70">/{total}</span>
       </span>
-      <span className="mono text-bone/68">{label}</span>
+      <span className="mono text-bone/84">{label}</span>
       {path && (
-        <span className="mono-sm ml-auto hidden text-bone/55 sm:block">{path}</span>
+        <span className="mono-sm ml-auto hidden text-bone/70 sm:block">{path}</span>
       )}
       <span className="caret" aria-hidden="true" />
     </div>

@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 @theme {
-  --color-ink: #0a0a0b;
-  --color-ink-raised: #101012;
+  --color-ink: #141416;
+  --color-ink-raised: #1c1c20;
   --color-bone: #e8e4dc;
   --color-signal: #ff6b2c;
 
@@ -13,13 +13,13 @@
 }
 
 :root {
-  --ink: #0a0a0b;
+  --ink: #141416;
   --bone: #e8e4dc;
   --signal: #ff6b2c;
-  --dim: rgba(232, 228, 220, 0.78);
-  --dimmer: rgba(232, 228, 220, 0.56);
-  --line: rgba(232, 228, 220, 0.1);
-  --line-strong: rgba(232, 228, 220, 0.2);
+  --dim: rgba(232, 228, 220, 0.86);
+  --dimmer: rgba(232, 228, 220, 0.68);
+  --line: rgba(232, 228, 220, 0.13);
+  --line-strong: rgba(232, 228, 220, 0.24);
   --gutter: clamp(1.25rem, 4vw, 4rem);
   --prompt-host: "lazysharaf@sharaf:~$ ";
   color-scheme: dark;
@@ -120,7 +120,7 @@ a {
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(10, 10, 11, 0.72);
+  background: rgba(20, 20, 22, 0.7);
   -webkit-backdrop-filter: blur(18px) saturate(150%);
   backdrop-filter: blur(18px) saturate(150%);
   border-bottom: 1px solid rgba(232, 228, 220, 0.08);
@@ -138,9 +138,9 @@ a {
   inset: 0;
   background: linear-gradient(
     180deg,
-    rgba(10, 10, 11, 0.82) 0%,
-    rgba(10, 10, 11, 0.45) 62%,
-    rgba(10, 10, 11, 0) 100%
+    rgba(20, 20, 22, 0.82) 0%,
+    rgba(20, 20, 22, 0.45) 62%,
+    rgba(20, 20, 22, 0) 100%
   );
   pointer-events: none;
   transition: opacity 480ms var(--ease-machine);
@@ -642,6 +642,7 @@ section[id] {
   letter-spacing: 0.14em;
   text-transform: uppercase;
   line-height: 1;
+  text-shadow: 0 1px 16px rgba(10, 10, 11, 0.85);
 }
 
 .mono-sm {
@@ -650,6 +651,7 @@ section[id] {
   letter-spacing: 0.18em;
   text-transform: uppercase;
   line-height: 1.2;
+  text-shadow: 0 1px 16px rgba(10, 10, 11, 0.9);
 }
 
 .display {
@@ -749,7 +751,7 @@ section[id] {
   font-family: var(--font-mono);
   font-size: 0.6875rem;
   letter-spacing: 0.06em;
-  color: rgba(232, 228, 220, 0.62);
+  color: rgba(232, 228, 220, 0.78);
 }
 
 .prompt::before {
@@ -763,7 +765,7 @@ section[id] {
   font-size: 0.5rem;
   line-height: 1.2;
   white-space: pre;
-  color: rgba(232, 228, 220, 0.60);
+  color: rgba(255, 107, 44, 0.78);
   letter-spacing: 0;
   max-width: 100%;
   overflow: hidden;
@@ -771,7 +773,7 @@ section[id] {
 }
 
 .group:hover .ascii {
-  color: rgba(232, 228, 220, 0.55);
+  color: rgba(255, 107, 44, 1);
 }
 
 .progress-track {
@@ -937,7 +939,7 @@ section[id] {
 .code-block {
   position: relative;
   border: 1px solid var(--line);
-  background: #0d0d10;
+  background: #1a1a1e;
   padding: 1.1rem 1.25rem;
   overflow-x: auto;
   font-family: var(--font-mono);

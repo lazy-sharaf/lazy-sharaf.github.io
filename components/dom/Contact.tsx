@@ -14,17 +14,17 @@ export function Contact() {
               <br />
               surface worth
               <br />
-              <span className="text-bone/68">testing?</span>
+              <span className="text-bone/84">testing?</span>
             </h2>
 
             <a
               href={`mailto:${site.email}`}
               className="group mt-10 inline-flex items-baseline gap-3 border-b border-bone/20 pb-2 transition-colors hover:border-signal"
             >
-              <span className="text-lg text-bone/92 transition-colors group-hover:text-signal sm:text-2xl">
+              <span className="text-lg text-bone/95 transition-colors group-hover:text-signal sm:text-2xl">
                 {site.email}
               </span>
-              <span className="mono-sm text-bone/58 transition-colors group-hover:text-signal">
+              <span className="mono-sm text-bone/74 transition-colors group-hover:text-signal">
                 ↗
               </span>
             </a>
@@ -36,64 +36,52 @@ export function Contact() {
           </div>
 
           <div className="md:col-span-4 md:col-start-9">
-            <dl className="space-y-6">
-              <div>
-                <dt className="mono-sm text-bone/58">Elsewhere</dt>
-                <dd className="mt-2 space-y-2">
-                  <div>
-                    <a
-                      href={site.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="ul-link text-sm text-bone/84 hover:text-bone"
-                    >
-                      {site.githubLabel}
-                    </a>
-                  </div>
-                  <div>
-                    <a
-                      href={site.medium}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="ul-link text-sm text-bone/84 hover:text-bone"
-                    >
-                      {site.mediumLabel}
-                    </a>
-                  </div>
-                </dd>
-              </div>
+            <p className="mono-sm text-bone/60">Elsewhere</p>
 
-              <div>
-                <dt className="mono-sm text-bone/58">PGP</dt>
-                <dd className="mt-2">
-                  {site.pgp.published ? (
-                    <a
-                      href={site.pgp.keyUrl ?? "#"}
-                      className="mono-sm break-all text-bone/78 hover:text-signal"
-                    >
-                      {site.pgp.fingerprint}
-                    </a>
-                  ) : (
-                    <span className="mono-sm text-bone/58">
-                      Key not yet published
+            <ul className="mt-3 border-t border-bone/10">
+              {[
+                { label: "github", href: site.github, handle: "lazy-sharaf" },
+                { label: "linkedin", href: site.linkedin, handle: "lazysharaf" },
+                { label: "x", href: site.x, handle: "@lazy_sharaf" },
+                { label: "facebook", href: site.facebook, handle: "lazysharaf" },
+                { label: "medium", href: site.medium, handle: "@lazysharaf" },
+              ].map((item) => (
+                <li key={item.label}>
+                  <a
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-baseline gap-4 border-b border-bone/10 py-3 transition-colors hover:bg-bone/[0.03]"
+                  >
+                    <span className="mono-sm w-20 shrink-0 text-bone/60 transition-colors group-hover:text-signal">
+                      {item.label}
                     </span>
-                  )}
-                </dd>
-              </div>
+                    <span className="flex-1 truncate text-sm text-bone/90 transition-colors group-hover:text-bone">
+                      {item.handle}
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      className="mono-sm text-bone/40 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-signal"
+                    >
+                      ↗
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
 
-              <div>
-                <dt className="mono-sm text-bone/58">Location</dt>
-                <dd className="mt-2 text-sm text-bone/78">{site.location}</dd>
-              </div>
+            <dl className="mt-8 flex items-baseline justify-between gap-4">
+              <dt className="mono-sm text-bone/60">Location</dt>
+              <dd className="text-right text-sm text-bone/88">{site.location}</dd>
             </dl>
           </div>
         </div>
 
         <footer className="mt-24 flex flex-col gap-4 border-t border-bone/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
-          <p className="mono-sm text-bone/55">
+          <p className="mono-sm text-bone/70">
             © {site.year} {site.name}
           </p>
-          <p className="mono-sm text-bone/55">
+          <p className="mono-sm text-bone/70">
             Built from scratch. No templates.
           </p>
         </footer>

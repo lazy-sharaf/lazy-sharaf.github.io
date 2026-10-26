@@ -46,15 +46,19 @@ export function SceneMount() {
       aria-hidden="true"
       style={{
         background:
-          "radial-gradient(120% 90% at 78% 18%, rgba(255,107,44,0.04) 0%, rgba(10,10,11,0) 55%)",
+          "radial-gradient(120% 90% at 78% 18%, rgba(255,107,44,0.06) 0%, rgba(20,20,22,0) 55%)",
       }}
     >
       {enabled && ready && <Scene />}
       <div
         className="pointer-events-none absolute inset-0"
+        style={{ background: "rgba(10, 10, 12, 0.24)" }}
+      />
+      <div
+        className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "linear-gradient(90deg, rgba(10,10,11,0.84) 0%, rgba(10,10,11,0.7) 36%, rgba(10,10,11,0.52) 64%, rgba(10,10,11,0.58) 100%)",
+            "linear-gradient(90deg, rgba(16,16,18,0.88) 0%, rgba(16,16,18,0.64) 34%, rgba(16,16,18,0.34) 64%, rgba(16,16,18,0.5) 100%)",
         }}
       />
     </div>

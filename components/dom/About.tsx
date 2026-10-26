@@ -15,9 +15,9 @@ export function About() {
               <br />
               things
               <br />
-              <span className="text-bone/68">responsibly.</span>
+              <span className="text-bone/84">responsibly.</span>
             </h2>
-            <p className="mono-sm mt-6 text-bone/58">since 2022</p>
+            <p className="mono-sm mt-6 text-bone/74">since 2022</p>
           </div>
 
           <div className="md:col-span-6 md:col-start-7">
@@ -30,7 +30,7 @@ export function About() {
               {site.aboutTags.map((tag) => (
                 <li
                   key={tag}
-                  className="mono-sm border border-bone/15 px-2.5 py-1.5 text-bone/68"
+                  className="mono-sm border border-bone/15 px-2.5 py-1.5 text-bone/84"
                 >
                   {tag}
                 </li>

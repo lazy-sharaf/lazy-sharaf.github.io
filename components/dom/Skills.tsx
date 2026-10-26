@@ -7,13 +7,13 @@ export function Skills() {
       <div className="shell">
         <SectionHead index="02" label="skills" path="~/skills" />
 
-        <div className="grid gap-10 md:grid-cols-12">
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-12">
           <div className="md:col-span-4">
             <p className="prompt mb-5">cat skills.txt</p>
             <h2 className="h2">
               The
               <br />
-              <span className="text-bone/68">toolkit.</span>
+              <span className="text-bone/84">toolkit.</span>
             </h2>
             <p className="body mt-6 max-w-xs">
               What I reach for on an engagement, and what I am reading when nothing is
@@ -22,23 +22,39 @@ export function Skills() {
           </div>
 
           <div className="md:col-span-8">
-            <div className="grid gap-x-8 gap-y-10 sm:grid-cols-2">
-              {skills.map((group) => (
-                <div key={group.group} className="border-t border-bone/10 pt-5">
-                  <h3 className="mono-sm text-signal/90">{group.group}</h3>
-                  <ul className="mt-4 flex flex-wrap gap-2">
-                    {group.items.map((item) => (
-                      <li
-                        key={item}
-                        className="mono-sm border border-bone/15 px-2.5 py-1.5 text-bone/68 transition-colors hover:border-bone/30 hover:text-bone/84"
-                      >
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+            <ul className="border-t border-bone/10">
+              {skills.map((group, i) => (
+                <li key={group.group} className="group border-b border-bone/10">
+                  <div className="grid grid-cols-[2rem_1fr_auto] items-baseline gap-x-4 gap-y-2 py-6 transition-colors group-hover:bg-bone/[0.02]">
+                    <span className="mono-sm text-bone/40 tabular transition-colors group-hover:text-signal">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+
+                    <div>
+                      <h3 className="text-base text-bone/95 transition-colors group-hover:text-bone sm:text-lg">
+                        {group.group}
+                      </h3>
+                      <p className="mt-2 text-sm leading-relaxed text-bone/74">
+                        {group.items.map((item, j) => (
+                          <span key={item}>
+                            {j > 0 && (
+                              <span className="text-signal/40" aria-hidden="true">
+                                {" · "}
+                              </span>
+                            )}
+                            {item}
+                          </span>
+                        ))}
+                      </p>
+                    </div>
+
+                    <span className="mono-sm text-bone/60 tabular">
+                      {String(group.items.length).padStart(2, "0")}
+                    </span>
+                  </div>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
         </div>
       </div>

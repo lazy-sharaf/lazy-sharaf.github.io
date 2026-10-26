@@ -130,7 +130,7 @@ export function CommandPalette({
               setActive(0);
             }}
             placeholder="Search index, contact, writeups…"
-            className="w-full bg-transparent font-mono text-sm text-bone placeholder:text-bone/58 focus:outline-none"
+            className="w-full bg-transparent font-mono text-sm text-bone placeholder:text-bone/74 focus:outline-none"
             aria-label="Search commands"
             autoComplete="off"
             spellCheck={false}
@@ -140,7 +140,7 @@ export function CommandPalette({
 
         <ul className="max-h-72 overflow-y-auto py-2" role="listbox">
           {filtered.length === 0 && (
-            <li className="px-4 py-6 mono-sm text-bone/62">No match.</li>
+            <li className="px-4 py-6 mono-sm text-bone/78">No match.</li>
           )}
           {filtered.map((cmd, i) => (
             <li key={cmd.id} role="option" aria-selected={i === active}>
@@ -159,19 +159,19 @@ export function CommandPalette({
                     }`}
                     aria-hidden="true"
                   />
-                  <span className="text-sm text-bone/92">{cmd.label}</span>
+                  <span className="text-sm text-bone/95">{cmd.label}</span>
                 </span>
-                <span className="mono-sm text-bone/58">{cmd.hint}</span>
+                <span className="mono-sm text-bone/74">{cmd.hint}</span>
               </button>
             </li>
           ))}
         </ul>
 
         <div className="flex items-center justify-between border-t border-bone/10 px-4 py-2">
-          <span className="mono-sm text-bone/55">
+          <span className="mono-sm text-bone/70">
             {copied ? "copied to clipboard" : "↑↓ navigate · ↵ select"}
           </span>
-          <span className="mono-sm text-bone/55">{filtered.length} results</span>
+          <span className="mono-sm text-bone/70">{filtered.length} results</span>
         </div>
       </div>
     </div>

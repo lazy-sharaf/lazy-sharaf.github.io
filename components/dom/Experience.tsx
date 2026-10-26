@@ -5,7 +5,7 @@ export function Experience() {
   return (
     <section id="experience" className="section">
       <div className="shell">
-        <SectionHead index="08" label="experience" path="~/cv" />
+        <SectionHead index="07" label="experience" path="~/cv" />
 
         <div className="grid gap-10 md:grid-cols-12">
           <div className="md:col-span-4">
@@ -13,7 +13,7 @@ export function Experience() {
             <h2 className="h2">
               Where
               <br />
-              <span className="text-bone/68">I&rsquo;ve been.</span>
+              <span className="text-bone/84">I&rsquo;ve been.</span>
             </h2>
           </div>
 
@@ -23,7 +23,7 @@ export function Experience() {
                 <li key={job.title} className="border-t border-bone/10 pt-6">
                   <p className="mono-sm text-signal/85">{job.period}</p>
                   <h3 className="mt-2 text-lg text-bone/95">{job.title}</h3>
-                  <p className="mono-sm mt-1 text-bone/62">{job.org}</p>
+                  <p className="mono-sm mt-1 text-bone/78">{job.org}</p>
                   <ul className="mt-4 space-y-2">
                     {job.points.map((point) => (
                       <li key={point} className="body flex gap-3">
@@ -42,7 +42,7 @@ export function Experience() {
             <div className="mt-12 border-t border-bone/10 pt-6">
               <p className="mono-sm text-signal/85">{education.period}</p>
               <h3 className="mt-2 text-lg text-bone/95">{education.degree}</h3>
-              <p className="mono-sm mt-1 text-bone/62">
+              <p className="mono-sm mt-1 text-bone/78">
                 {education.org} · {education.detail}
               </p>
             </div>
