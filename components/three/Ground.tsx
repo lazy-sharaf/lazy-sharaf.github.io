@@ -45,7 +45,8 @@ const fragment = /* glsl */ `
     float coast = 1.0 - smoothstep(-132.0, -100.0, vWorld.z);
     float water = 1.0 - smoothstep(uWaterZ - 3.0, uWaterZ + 1.5, vWorld.z);
 
-    float fog = 1.0 - exp(-pow(vDepth * 0.020, 2.0));
+    float fd = vDepth * 0.020;
+    float fog = 1.0 - exp(-fd * fd);
     float vis = 1.0 - clamp(fog, 0.0, 1.0);
 
     float ax = abs(vWorld.x);
@@ -77,7 +78,7 @@ const fragment = /* glsl */ `
     city = mix(city, vec3(0.038, 0.036, 0.042), smoothstep(9.6, 12.0, ax));
 
     float pool = distance(vWorld.xz, uLightPos.xz);
-    city += uSun * 0.05 * exp(-pool * 0.05) * vis;
+    city += uSun * 0.075 * exp(-pool * 0.05) * vis;
 
     /* ================= SAND ================= */
     float m1 = hash21(floor(vWorld.xz * 0.7));
@@ -95,45 +96,106 @@ const fragment = /* glsl */ `
     sand = mix(sand, sand * 0.34, wet * 0.9);
 
     /* ================= SEA ================= */
+    // The glitter path is needed by the wet-sand term below, so it is
+    // computed first; everything else only matters where water is visible.
     float far = clamp((uWaterZ - vWorld.z) / 420.0, 0.0, 1.0);
 
-    vec3 sea = mix(vec3(0.010, 0.017, 0.032), vec3(0.070, 0.066, 0.098), pow(far, 0.9));
-
-    // swell — two crossing wave trains
-    float w1 = sin(vWorld.z * 0.55 + uTime * 0.8 + sin(vWorld.x * 0.16) * 2.2);
-    float w2 = sin(vWorld.z * 1.35 - uTime * 0.55 + sin(vWorld.x * 0.42) * 3.0);
-    sea *= 0.90 + 0.10 * w1 + 0.05 * w2;
-
-    // glitter path beneath the sun
     float trackX = cameraPosition.x
                  + (uSunDir.x / max(-uSunDir.z, 0.001)) * (cameraPosition.z - vWorld.z);
-    float trackW = 0.50 - 0.40 * far;
-    float track  = exp(-pow((vWorld.x - trackX) * trackW, 2.0));
 
-    float sparkle = pow(max(0.5 + 0.5 * sin(vWorld.z * 3.1 + uTime * 1.5 + sin(vWorld.x * 1.1) * 2.4), 0.0), 12.0);
-    float sparkle2 = pow(max(0.5 + 0.5 * sin(vWorld.z * 6.7 - uTime * 2.1 + sin(vWorld.x * 2.2) * 3.1), 0.0), 18.0);
+    vec3 sea = vec3(0.0);
 
-    sea += uSun * track * (0.10 + sparkle * 1.15 + sparkle2 * 0.55 * (1.0 - far * 0.7));
+    if (water > 0.001) {
+      vec2  p = vWorld.xz;
+      float nearF = 1.0 - smoothstep(0.12, 0.72, far);
 
-    // foam: one line on the sand, one breaking further out
-    float foamA = exp(-pow((shore + 0.6) * 0.8, 2.0));
-    float foamB = exp(-pow((shore + 4.2 + sin(uTime * 0.5 + vWorld.x * 0.12) * 1.1) * 1.1, 2.0)) * 0.55;
-    float foamMod = 0.5 + 0.5 * sin(uTime * 0.9 + vWorld.x * 0.3 + sin(vWorld.x * 0.06) * 2.0);
-    sea += vec3(0.72, 0.70, 0.68) * (foamA + foamB) * (0.30 + foamMod * 0.55);
+      // ---- surface slope from five directional trains ----
+      // The plane is never displaced; the normal is what sells moving water.
+      // Short chop fades with distance, where it could only alias.
+      vec2 slope = vec2(0.0);
 
-    // distance settles into the sky's horizon
-    vec2  az = normalize(vec2(vWorld.x - cameraPosition.x, vWorld.z - cameraPosition.z));
-    float toward = max(dot(az, normalize(vec2(uSunDir.x, uSunDir.z))), 0.0);
-    vec3  horizon = mix(uDuskCool, uDuskWarm, pow(toward, 4.0));
+      vec2 d1 = vec2( 0.94,  0.34);
+      float ph1 = dot(d1, p) * 0.2417 + uTime * 0.55;
+      slope += d1 * (0.038 * cos(ph1));
 
-    sea = mix(sea, horizon, smoothstep(0.10, 0.95, far) * 0.95);
+      vec2 d2 = vec2( 0.72, -0.69);
+      float ph2 = dot(d2, p) * 0.4488 - uTime * 0.85;
+      slope += d2 * (0.040 * cos(ph2));
+
+      vec2 d3 = vec2( 0.30,  0.95);
+      float ph3 = dot(d3, p) * 0.8378 + uTime * 1.15;
+      slope += d3 * (0.034 * cos(ph3)) * nearF;
+
+      vec2 d4 = vec2(-0.86,  0.51);
+      float ph4 = dot(d4, p) * 1.4960 + uTime * 1.70;
+      slope += d4 * (0.026 * cos(ph4)) * nearF;
+
+      vec2 d5 = vec2( 0.15, -0.99);
+      float ph5 = dot(d5, p) * 2.4435 - uTime * 2.30;
+      slope += d5 * (0.020 * cos(ph5)) * nearF;
+
+      vec3 nrm = normalize(vec3(-slope.x, 1.0, -slope.y));
+      vec3 Vv  = normalize(cameraPosition - vWorld);
+      vec3 Hv  = normalize(normalize(uSunDir) + Vv);
+
+      // a wave face tilted toward the camera catches more sky
+      float face = clamp(0.5 + slope.y * 5.0, 0.0, 1.0);
+
+      sea = mix(vec3(0.011, 0.019, 0.038), vec3(0.060, 0.072, 0.102), pow(far, 0.6));
+      sea *= 0.86 + 0.30 * face;
+
+      // distance settles into the sky's horizon
+      vec2  az = normalize(vec2(vWorld.x - cameraPosition.x, vWorld.z - cameraPosition.z));
+      float toward = max(dot(az, normalize(vec2(uSunDir.x, uSunDir.z))), 0.0);
+      vec3  horizon = mix(uDuskCool, uDuskWarm, pow(toward, 4.0));
+
+      sea = mix(sea, horizon, smoothstep(0.08, 0.90, far) * 0.92);
+
+      // the swell still reads through the haze
+      sea *= 0.90 + 0.20 * face * (1.0 - far * 0.45);
+
+      // ---- foam ----
+      // the wash on the sand plus one line breaking further out
+      float set  = 0.5 + 0.5 * sin(uTime * 0.45 + vWorld.x * 0.015);
+      float fa   = (shore + 0.5 + set * 1.9) * 0.85;
+      float fb   = (shore + 4.5 + sin(uTime * 0.5 + vWorld.x * 0.12) * 1.4) * 1.05;
+      float foamA = exp(-fa * fa);
+      float foamB = exp(-fb * fb) * 0.50;
+      float lace  = 0.55 + 0.45 * sin(uTime * 0.9 + vWorld.x * 0.32 + sin(vWorld.x * 0.07) * 2.0);
+      sea += vec3(0.78, 0.76, 0.73) * (foamA + foamB) * (0.26 + lace * 0.58);
+
+      // whitecaps where the crests get steep, stretched along the crest
+      float steep = length(slope);
+      float capN  = hash21(floor(vec2(p.x * 0.11, p.y * 0.75)) + floor(uTime * 0.6) * 7.0);
+      float cap   = smoothstep(0.075, 0.125, steep) * step(0.55, capN) * nearF;
+      sea += vec3(0.80, 0.79, 0.76) * cap * 0.30;
+
+      // ---- glitter path beneath the sun ----
+      float trackW = 0.50 - 0.40 * far;
+      float tdx = (vWorld.x - trackX) * trackW;
+      float track = exp(-tdx * tdx);
+
+      float ndh = max(dot(nrm, Hv), 0.0);
+      float glint = pow(ndh, 240.0) * 3.2 + pow(ndh, 26.0) * 0.22;
+      sea += uSun * track * glint * (0.35 + 0.65 * nearF);
+
+      // finer sparkle riding on top of the glints
+      float s1 = max(0.5 + 0.5 * sin(vWorld.z * 3.1 + uTime * 1.5 + sin(vWorld.x * 1.1) * 2.4), 0.0);
+      float s2 = s1 * s1;
+      float s4 = s2 * s2;
+      float s8 = s4 * s4;
+      float sparkle  = s8 * s4;      // s1^12
+      float sparkle2 = s8 * s8 * s2; // s1^18
+      sea += uSun * track * (sparkle * 0.55 + sparkle2 * 0.35 * (1.0 - far * 0.7));
+    }
 
     /* ================= COMPOSE ================= */
     vec3 col = mix(city, sand, coast);
     col = mix(col, sea, water);
 
     // wet sand carries the sun
-    col += uSun * exp(-pow((vWorld.x - trackX) * 0.09, 2.0)) * wet * (1.0 - water) * 0.22;
+    float wdx = (vWorld.x - trackX) * 0.09;
+    col += uSun * exp(-wdx * wdx) * wet * (1.0 - water) * 0.22;
 
     col = mix(col, vec3(0.090, 0.086, 0.102), clamp(fog, 0.0, 1.0) * (1.0 - water));
 
@@ -146,7 +208,7 @@ export function Ground({ lightPos }: { lightPos: React.RefObject<THREE.Vector3> 
 
   const uniforms = useMemo(
     () => ({
-      uAsphalt: { value: new THREE.Color("#15151a") },
+      uAsphalt: { value: new THREE.Color("#191920") },
       uPaint: { value: new THREE.Color("#b9b2a4") },
       uSand: { value: new THREE.Color("#5c4732") },
       uSun: { value: new THREE.Color("#ff6a42") },

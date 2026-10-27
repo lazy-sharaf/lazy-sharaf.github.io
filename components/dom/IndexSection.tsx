@@ -35,7 +35,7 @@ export function IndexSection() {
                       {String(indexEntries.length).padStart(2, "0")}
                     </span>
 
-                    <span className="mono-sm hidden w-32 shrink-0 text-signal/85 sm:block">
+                    <span className="mono-sm w-28 shrink-0 truncate text-signal/85 sm:w-32">
                       {entry.path}
                     </span>
 
@@ -48,7 +48,7 @@ export function IndexSection() {
                       </span>
                     </span>
 
-                    <span className="mono-sm hidden shrink-0 text-bone/74 md:block">
+                    <span className="mono-sm hidden shrink-0 text-bone/74 sm:block">
                       {entry.count}
                     </span>
 

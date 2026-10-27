@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { BOOT_TOTAL, setStage } from "@/lib/boot";
 
 const Scene = dynamic(() => import("./Scene"), { ssr: false });
 
@@ -10,6 +11,10 @@ const Scene = dynamic(() => import("./Scene"), { ssr: false });
  * Mounts the WebGL scene after first paint so it never blocks the
  * initial HTML/CSS render. Falls back to a static gradient if WebGL
  * is unavailable. Reading routes stay quiet — no scene behind prose.
+ *
+ * The chunk download starts immediately rather than waiting for idle: the
+ * boot screen is holding the visitor until the scene is ready, so the fastest
+ * possible start is the one that gets them through it soonest.
  */
 export function SceneMount() {
   const [ready, setReady] = useState(false);
@@ -17,7 +22,10 @@ export function SceneMount() {
   const enabled = pathname === "/";
 
   useEffect(() => {
-    if (!enabled) return;
+    if (!enabled) {
+      setStage(BOOT_TOTAL);
+      return;
+    }
 
     const supportsWebGL = (() => {
       try {
@@ -30,14 +38,17 @@ export function SceneMount() {
       }
     })();
 
-    if (!supportsWebGL) return;
+    // No WebGL means no scene to wait for. Open the gate rather than sit on
+    // an overlay forever.
+    if (!supportsWebGL) {
+      setStage(BOOT_TOTAL);
+      return;
+    }
 
-    const idle = window.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 200));
-    const id = idle(() => setReady(true));
-    return () => {
-      if (window.cancelIdleCallback) window.cancelIdleCallback(id as number);
-      else window.clearTimeout(id as number);
-    };
+    import("./Scene").then(() => setStage(2));
+
+    const raf = requestAnimationFrame(() => setReady(true));
+    return () => cancelAnimationFrame(raf);
   }, [enabled]);
 
   return (
@@ -52,6 +63,7 @@ export function SceneMount() {
       {enabled && ready && <Scene />}
       <div className="scene-veil pointer-events-none absolute inset-0" />
       <div className="scene-scrim pointer-events-none absolute inset-0" />
+      <div className="scene-vignette pointer-events-none absolute inset-0" />
     </div>
   );
 }

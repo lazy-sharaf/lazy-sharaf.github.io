@@ -47,6 +47,13 @@ html {
   }
 }
 
+/* Boot overlay holds the page still until the scene has drawn. */
+html[data-boot="1"],
+html[data-boot="1"] body {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
 body {
   background: var(--ink);
   color: var(--bone);
@@ -1199,16 +1206,29 @@ section[id] {
 /* ── Scene overlays ───────────────────────────────────── */
 
 .scene-veil {
-  background: rgba(10, 10, 12, 0.24);
+  background: rgba(10, 10, 12, 0.12);
 }
 
+/* Same falloff the postprocessing Vignette drew, but as a DOM layer — one
+   fewer full-screen pass in the composer. */
+.scene-vignette {
+  background: radial-gradient(
+    115% 85% at 50% 50%,
+    rgba(0, 0, 0, 0) 46%,
+    rgba(0, 0, 0, 0.22) 74%,
+    rgba(0, 0, 0, 0.42) 100%
+  );
+}
+
+/* Only the left column carries copy, so the wash is heavy there and almost
+   absent on the right — the skyline has to stay visible to be worth drawing. */
 .scene-scrim {
   background: linear-gradient(
     90deg,
-    rgba(16, 16, 18, 0.88) 0%,
-    rgba(16, 16, 18, 0.64) 34%,
-    rgba(16, 16, 18, 0.34) 64%,
-    rgba(16, 16, 18, 0.5) 100%
+    rgba(14, 14, 16, 0.82) 0%,
+    rgba(14, 14, 16, 0.56) 30%,
+    rgba(14, 14, 16, 0.18) 58%,
+    rgba(14, 14, 16, 0.3) 100%
   );
 }
 
@@ -1226,4 +1246,55 @@ section[id] {
       rgba(16, 16, 18, 0.78) 100%
     );
   }
+}
+
+/* ── Boot screen ───────────────────────────────────────── */
+
+@keyframes boot-drift {
+  0%,
+  100% {
+    transform: translate3d(-6%, 2%, 0) scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translate3d(8%, -4%, 0) scale(1.22);
+    opacity: 0.85;
+  }
+}
+
+@keyframes boot-scan {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(400%);
+  }
+}
+
+.boot-blob {
+  animation: boot-drift 9s ease-in-out infinite;
+}
+
+.boot-scan {
+  animation: boot-scan 2.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes boot-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(390%);
+  }
+}
+
+.boot-shimmer {
+  width: 26%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: boot-shimmer 1.9s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }

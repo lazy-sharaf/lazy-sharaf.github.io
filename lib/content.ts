@@ -144,9 +144,6 @@ export const recognitions: Recognition[] = [
   },
 ];
 
-/** Disclosed to, but with no public recognition listed on the CV. */
-export const additionalDisclosures = ["Adyen", "Utrecht University"];
-
 export const numbers = [
   { value: "545", label: "teams at BDSec CTF 2026", sub: "placed 2nd" },
   { value: "06", label: "CTF & competition results" },

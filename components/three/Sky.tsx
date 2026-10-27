@@ -55,50 +55,75 @@ const fragment = /* glsl */ `
     vec3 col = mix(night, sky, uCoast);
 
     /* ---------- the rising sun ---------- */
-    vec3  sunN = normalize(uSunDir);
-    float az0  = atan(sunN.x, -sunN.z);
-    float el0  = asin(clamp(sunN.y, -1.0, 1.0));
+    // Inland the sun is below the horizon and uCoast is 0, so this whole
+    // block would multiply by zero. Skipping it is a uniform branch — no
+    // divergence, and most of the page never pays for the rays.
+    if (uCoast > 0.002) {
+      vec3  sunN = normalize(uSunDir);
+      float az0  = atan(sunN.x, -sunN.z);
+      float el0  = asin(clamp(sunN.y, -1.0, 1.0));
 
-    float dAz = atan(d.x, -d.z) - az0;
-    float dEl = asin(clamp(d.y, -1.0, 1.0)) - el0;
+      float dAz = atan(d.x, -d.z) - az0;
+      float dEl = asin(clamp(d.y, -1.0, 1.0)) - el0;
 
-    // squashed a little, the way a sun looks climbing out of the sea
-    vec2  off = vec2(dAz, dEl * 1.20);
-    float rad = length(off);
-    const float R = 0.030;
+      // squashed a little, the way a sun looks climbing out of the sea
+      vec2  off = vec2(dAz, dEl * 1.20);
+      float rad = length(off);
+      const float R = 0.030;
 
-    float disc = 1.0 - smoothstep(R * 0.94, R * 1.04, rad);
-    float limb = smoothstep(0.0, R, rad);
+      float disc = 1.0 - smoothstep(R * 0.94, R * 1.04, rad);
+      float limb = smoothstep(0.0, R, rad);
 
-    // hot core falling to a red rim — reads as a light source
-    vec3 sunFace = mix(vec3(2.6, 1.35, 0.66), vec3(1.10, 0.36, 0.15), pow(limb, 1.3));
-    col = mix(col, sunFace, disc * uCoast);
+      // hot core falling to a red rim — reads as a light source
+      vec3 sunFace = mix(vec3(2.6, 1.35, 0.66), vec3(1.10, 0.36, 0.15), pow(limb, 1.3));
+      col = mix(col, sunFace, disc * uCoast);
 
-    // rays: three angular octaves, fading out from the disc
-    float rayAngle = atan(off.y, off.x) + uTime * 0.015;
-    float rays = 0.0;
-    rays += 0.55 * pow(0.5 + 0.5 * sin(rayAngle * 17.0 + 1.7), 7.0);
-    rays += 0.30 * pow(0.5 + 0.5 * sin(rayAngle * 29.0 - 0.6), 9.0);
-    rays += 0.15 * pow(0.5 + 0.5 * sin(rayAngle * 47.0 + 2.4), 11.0);
+      // rays: three angular octaves, fading out from the disc. Their falloff
+      // is exp(-rad * 5.5), so beyond rad 0.6 they contribute nothing.
+      if (rad < 0.6) {
+        float rayAngle = atan(off.y, off.x) + uTime * 0.015;
+        float rays = 0.0;
+        rays += 0.55 * pow(0.5 + 0.5 * sin(rayAngle * 17.0 + 1.7), 7.0);
+        rays += 0.30 * pow(0.5 + 0.5 * sin(rayAngle * 29.0 - 0.6), 9.0);
+        rays += 0.15 * pow(0.5 + 0.5 * sin(rayAngle * 47.0 + 2.4), 11.0);
 
-    col += vec3(1.0, 0.52, 0.26) * rays * exp(-rad * 5.5) * 0.22 * uCoast;
+        col += vec3(1.0, 0.52, 0.26) * rays * exp(-rad * 5.5) * 0.22 * uCoast;
+      }
 
-    // soft halo, kept off the disc so the face stays hot
-    float sd   = max(dot(d, sunN), 0.0);
-    float glow = pow(sd, 220.0) * 0.22
-               + pow(sd, 26.0)  * 0.16
-               + pow(sd, 6.0)   * 0.05;
-    col += SUN_FIRE * glow * (1.0 - disc) * uCoast;
+      // soft halo, kept off the disc so the face stays hot
+      float sd   = max(dot(d, sunN), 0.0);
+      if (sd > 0.55) {
+        float glow = pow(sd, 220.0) * 0.22
+                   + pow(sd, 26.0)  * 0.16
+                   + pow(sd, 6.0)   * 0.05;
+        col += SUN_FIRE * glow * (1.0 - disc) * uCoast;
+      }
 
-    // the sky itself lifts around the sun
-    col += SUN_FIRE * pow(toward, 2.0) * exp(-max(h, 0.0) * 9.0) * 0.16 * uCoast;
+      // the sky itself lifts around the sun
+      col += SUN_FIRE * pow(toward, 2.0) * exp(-max(h, 0.0) * 9.0) * 0.16 * uCoast;
 
-    // light lying flat on the waterline
-    float waterline = exp(-pow(h * 90.0, 2.0)) * pow(toward, 5.0);
-    col += SUN_FIRE * waterline * 0.26 * uCoast;
+      // light lying flat on the waterline
+      float wl = h * 90.0;
+      float waterline = exp(-wl * wl) * pow(toward, 5.0);
+      col += SUN_FIRE * waterline * 0.26 * uCoast;
 
-    // below the horizon, settle into sea tone
-    col = mix(col, horizonCol * 0.26, smoothstep(0.0, -0.20, h) * uCoast);
+      // ---- horizon haze ----
+      // A band of air standing on the waterline: thickest at the sea surface,
+      // thinning upward, taking the sun's colour where the sun is. This is what
+      // stops the sea meeting the sky in a hard cut.
+      float hz   = max(h, 0.0);
+      float haze = exp(-hz * 30.0) * (1.0 - smoothstep(0.06, 0.20, hz));
+      haze *= 0.55 + 0.45 * pow(toward, 2.0);
+      vec3 hazeCol = mix(horizonCol * 1.25, SUN_FIRE * 0.90, pow(toward, 4.0) * 0.65);
+      col = mix(col, hazeCol, haze * 0.62 * uCoast);
+
+      // below the horizon, settle into sea tone
+      col = mix(col, horizonCol * 0.26, smoothstep(0.0, -0.20, h) * uCoast);
+    }
+
+    // a standing glow on the horizon even inland, so the street has a
+    // vanishing point instead of ending in flat black
+    col += vec3(1.0, 0.44, 0.20) * exp(-max(h, 0.0) * 12.0) * 0.075;
 
     gl_FragColor = vec4(col, 1.0);
   }

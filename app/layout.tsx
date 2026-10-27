@@ -96,6 +96,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="grain min-h-full">
+        <noscript>
+          <style>{`#boot{display:none}`}</style>
+        </noscript>
         <a href="#main" className="skip-link sr-only-focusable">
           Skip to content
         </a>

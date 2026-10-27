@@ -1,4 +1,4 @@
-import { additionalDisclosures, numbers } from "@/lib/content";
+import { numbers } from "@/lib/content";
 import { RecognitionList } from "./RecognitionList";
 import { SectionHead } from "./SectionHead";
 
@@ -27,9 +27,7 @@ export function DisclosureRecord() {
           <div className="md:col-span-8">
             <RecognitionList />
 
-            <p className="mono-sm mt-5 text-bone/74">
-              Also disclosed to: {additionalDisclosures.join(" · ")}
-            </p>
+            <p className="mono-sm mt-5 text-bone/74">And many more</p>
           </div>
         </div>
 

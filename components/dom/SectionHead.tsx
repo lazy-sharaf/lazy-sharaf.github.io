@@ -25,7 +25,7 @@ export function SectionHead({
       </span>
       <span className="mono text-bone/84">{label}</span>
       {path && (
-        <span className="mono-sm ml-auto hidden text-bone/70 sm:block">{path}</span>
+        <span className="mono-sm ml-auto shrink-0 text-bone/70">{path}</span>
       )}
       <span className="caret" aria-hidden="true" />
     </div>

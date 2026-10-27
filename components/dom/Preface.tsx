@@ -18,7 +18,7 @@ export function Preface() {
             </span>
             <span>preface</span>
           </span>
-          <span className="hidden sm:block">~/intro</span>
+          <span className="shrink-0">~/intro</span>
         </div>
 
         <div className="mt-12 grid gap-10 md:grid-cols-12 md:gap-8">
@@ -44,7 +44,7 @@ export function Preface() {
         <div className="mt-14 flex items-center gap-4 border-t border-bone/10 pt-4">
           <span className="mono-sm text-bone/70">scroll</span>
           <span className="h-px w-16 bg-bone/15" aria-hidden="true" />
-          <span className="mono-sm ml-auto hidden text-bone/70 sm:block">
+          <span className="mono-sm ml-auto truncate text-bone/70">
             {site.location}
           </span>
         </div>

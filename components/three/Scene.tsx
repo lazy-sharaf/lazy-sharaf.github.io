@@ -2,12 +2,15 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Bloom, EffectComposer, Vignette } from "@react-three/postprocessing";
+import { Bloom, EffectComposer } from "@react-three/postprocessing";
 import * as THREE from "three";
 import { scrollState } from "@/lib/scroll";
 import { coastAt } from "@/lib/coast";
+import { BOOT_TOTAL, setStage } from "@/lib/boot";
 import { City } from "./City";
+import { Bike } from "./Bike";
 import { Crabs } from "./Crabs";
+import { Dolphin } from "./Dolphin";
 import { Ground } from "./Ground";
 import { Shore } from "./Shore";
 import { Sky } from "./Sky";
@@ -41,7 +44,7 @@ function AdaptiveFov() {
 
   useEffect(() => {
     const aspect = size.width / Math.max(size.height, 1);
-    const fov = aspect < 0.7 ? 84 : aspect < 1.05 ? 72 : aspect < 1.45 ? 62 : 55;
+    const fov = aspect < 0.7 ? 88 : aspect < 1.05 ? 72 : aspect < 1.45 ? 62 : 55;
     (camera as THREE.PerspectiveCamera).fov = fov;
     camera.updateProjectionMatrix();
   }, [camera, size]);
@@ -66,8 +69,38 @@ function CameraRig() {
   const pos = useRef(new THREE.Vector3());
   const look = useRef(new THREE.Vector3());
 
-  useFrame((state) => {
-    const p = THREE.MathUtils.clamp(scrollState.progress, 0, 1);
+  // The camera follows a damped copy of the scroll position, not the raw one.
+  // Lenis only smooths the wheel: a scrollbar drag or a touch flick moves the
+  // page in raw jumps, which made a 1:1 camera teleport. An exponential ease
+  // still leaves a jolt on the first frame (it starts at full speed), so this
+  // is a critically damped spring — acceleration starts at zero, which is what
+  // makes a jump read as travel rather than a cut.
+  const eased = useRef(0);
+  const vel = useRef(0);
+  const started = useRef(false);
+
+  useFrame((state, delta) => {
+    const target = THREE.MathUtils.clamp(scrollState.progress, 0, 1);
+
+    if (!started.current) {
+      eased.current = target;
+      started.current = true;
+    }
+
+    // clamped so a backgrounded tab or a long frame can't destabilise it
+    const dt = Math.min(delta, 1 / 30);
+    const omega = 11;
+
+    const offset = eased.current - target;
+    const accel = -2 * omega * vel.current - omega * omega * offset;
+    vel.current += accel * dt;
+    eased.current = THREE.MathUtils.clamp(
+      eased.current + vel.current * dt,
+      0,
+      1,
+    );
+
+    const p = eased.current;
     const t = state.clock.elapsedTime;
 
     path.getPointAt(p, pos.current);
@@ -127,6 +160,28 @@ function Atmosphere() {
   return null;
 }
 
+/**
+ * Claims the last boot stage the first time the renderer actually draws.
+ * `frameloop="demand"` (reduced motion) still renders once on mount, so this
+ * fires either way; the timeout is only a backstop for a stalled GPU.
+ */
+function BootFrame() {
+  const done = useRef(false);
+
+  useFrame(() => {
+    if (done.current) return;
+    done.current = true;
+    setStage(BOOT_TOTAL);
+  });
+
+  useEffect(() => {
+    const t = window.setTimeout(() => setStage(BOOT_TOTAL), 4000);
+    return () => window.clearTimeout(t);
+  }, []);
+
+  return null;
+}
+
 export default function Scene() {
   const [tier, setTier] = useState<Tier>("high");
   const lightPos = useRef(new THREE.Vector3(0, 13, 0));
@@ -143,7 +198,7 @@ export default function Scene() {
 
   return (
     <Canvas
-      dpr={high ? [1, 1.75] : 1}
+      dpr={high ? [1, 1.75] : [1, 1.5]}
       gl={{
         antialias: high,
         alpha: false,
@@ -153,25 +208,28 @@ export default function Scene() {
       camera={{ position: [0, 2.7, 6], fov: 55, near: 0.1, far: 900 }}
       style={{ pointerEvents: "none" }}
       frameloop={tier === "static" ? "demand" : "always"}
+      onCreated={() => setStage(3)}
     >
+      <BootFrame />
       <Atmosphere />
       <Sky />
       <AdaptiveFov />
       <CameraRig />
       <Ground lightPos={lightPos} />
       <City density={density} />
+      <Bike />
       <Shore />
       <Crabs />
+      <Dolphin />
 
-      {high && (
-        <EffectComposer>
+      {tier !== "static" && (
+        <EffectComposer multisampling={0} resolutionScale={high ? 1 : 0.4}>
           <Bloom
-            intensity={0.55}
-            luminanceThreshold={0.22}
+            intensity={0.58}
+            luminanceThreshold={0.19}
             luminanceSmoothing={0.35}
             mipmapBlur
           />
-          <Vignette offset={0.22} darkness={0.55} eskil={false} />
         </EffectComposer>
       )}
     </Canvas>

@@ -284,7 +284,7 @@ export function Chrome() {
             <span className="progress-track" aria-hidden="true">
               <span className="progress-fill" style={{ width: `${progress}%` }} />
             </span>
-            <span className="hidden text-bone/70 sm:inline">~/soraf</span>
+            <span className="text-bone/70">~/soraf</span>
           </div>
           <a
             href="#contact"

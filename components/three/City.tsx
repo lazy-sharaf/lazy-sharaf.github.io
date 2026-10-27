@@ -21,6 +21,7 @@ const cityVertex = /* glsl */ `
   varying vec3  vWorld;
   varying vec3  vNormalW;
   varying vec3  vLocal;
+  varying vec3  vHalf;
   varying vec3  vNormalL;
   varying float vDepth;
   varying float vSeed;
@@ -36,6 +37,7 @@ const cityVertex = /* glsl */ `
     // metres, so the window grid stays the same size on every building
     vec3 scale = vec3(length(im[0].xyz), length(im[1].xyz), length(im[2].xyz));
     vLocal  = position * scale;
+    vHalf   = scale * 0.5;
     vNormalL = normal;
 
     vec4 world = modelMatrix * im * vec4(position, 1.0);
@@ -55,10 +57,12 @@ const cityFragment = /* glsl */ `
   uniform vec3  uBase;
   uniform vec3  uSunCol;
   uniform vec3  uSunDir;
+  uniform float uMpp;
 
   varying vec3  vWorld;
   varying vec3  vNormalW;
   varying vec3  vLocal;
+  varying vec3  vHalf;
   varying vec3  vNormalL;
   varying float vDepth;
   varying float vSeed;
@@ -78,41 +82,110 @@ const cityFragment = /* glsl */ `
     float u = abs(vNormalW.x) > 0.5 ? vWorld.z : vWorld.x;
     float v = vWorld.y;
 
-    vec2 cell = vec2(u / 1.9, v / 3.0);
-    vec2 id   = floor(cell);
-    vec2 f    = fract(cell);
-
     // depth fade instead of derivatives — fwidth breaks up at triangle edges
     float detail = 1.0 - smoothstep(30.0, 80.0, vDepth);
 
-    float wx = smoothstep(0.24, 0.28, f.x) * (1.0 - smoothstep(0.72, 0.76, f.x));
-    float wy = smoothstep(0.30, 0.34, f.y) * (1.0 - smoothstep(0.76, 0.80, f.y));
+    /* ---- each building gets its own facade ---- */
+    float s = vSeed;
+    float pitchX = mix(1.55, 2.55, fract(s * 7.31));
+    float pitchY = mix(2.70, 3.70, fract(s * 3.77));
 
-    float win = wx * wy * side;
+    vec2 cell = vec2(u / pitchX, v / pitchY);
+    vec2 id   = floor(cell);
+    vec2 f    = fract(cell);
 
-    float r    = hash21(id + vSeed * 91.7);
-    float lit  = step(0.62, r);
-    float glow = 0.30 + 0.70 * hash21(id * 1.37 + 3.1);
+    // three families: punched openings, horizontal ribbons, vertical slots
+    float punched = smoothstep(0.22, 0.27, f.x) * (1.0 - smoothstep(0.73, 0.78, f.x))
+                  * smoothstep(0.26, 0.31, f.y) * (1.0 - smoothstep(0.74, 0.79, f.y));
 
-    vec3 wcol = mix(vec3(1.0, 0.74, 0.46), vec3(0.62, 0.78, 1.0), step(0.90, r));
+    float ribbon = smoothstep(0.03, 0.07, f.x) * (1.0 - smoothstep(0.93, 0.97, f.x))
+                 * smoothstep(0.40, 0.45, f.y) * (1.0 - smoothstep(0.60, 0.65, f.y));
 
-    vec3 nearWin = wcol * win * lit * glow * 0.80;
-    vec3 farWin  = vec3(1.0, 0.74, 0.48) * 0.085;
+    float slot = smoothstep(0.34, 0.39, f.x) * (1.0 - smoothstep(0.61, 0.66, f.x))
+               * smoothstep(0.10, 0.15, f.y) * (1.0 - smoothstep(0.88, 0.93, f.y));
 
-    // concrete, a touch lighter toward the roof
+    float family = floor(fract(s * 13.7) * 3.0);
+    float win = mix(punched, ribbon, step(0.5, family));
+    win = mix(win, slot, step(1.5, family));
+
+    // a wide ribbon covers far more area than a punched opening, so it has to
+    // be dimmer or bloom turns a whole floor into a white bar
+    float winScale = mix(1.0, 0.42, step(0.5, family));
+    winScale = mix(winScale, 0.78, step(1.5, family));
+
+    // How much of the grid survives at this pixel. Two things destroy it:
+    // looking down a wall (one pixel spans many metres of facade) and plain
+    // distance (a whole cell shrinks below a few pixels). Both tests are
+    // analytic — no derivatives — so the result is stable frame to frame
+    // instead of flickering into speckle.
+    float mpp    = vDepth * uMpp;
+    float cellPx = min(pitchX, pitchY) / max(mpp, 1e-4);
+    float crisp  = smoothstep(0.10, 0.42, abs(dot(N, V)))
+                 * smoothstep(3.5, 8.0, cellPx);
+
+    // mean coverage of all three families is close enough to share one number
+    win = mix(0.28, win, crisp) * winScale * side;
+
+    // a shadow line under each opening reads as a sill
+    float sill = smoothstep(0.17, 0.25, f.y) * (1.0 - smoothstep(0.25, 0.30, f.y));
+
+    /* ---- lights ---- */
+    float r = hash21(id + s * 91.7);
+    // some blocks are mostly dark, some are busy
+    float litBase = mix(0.40, 0.70, fract(s * 5.13));
+    float lit  = mix(litBase, step(litBase, r), crisp);
+    float glow = mix(1.0, 0.35 + 0.65 * hash21(id * 1.37 + 3.1), crisp);
+
+    vec3 warm = vec3(1.0, 0.74, 0.46);
+    vec3 cool = vec3(0.62, 0.78, 1.0);
+    vec3 wcol = mix(warm, mix(warm, cool, step(0.88, r)), crisp);
+    // whole buildings lean warm or cool
+    wcol = mix(wcol, mix(warm, cool, step(0.80, fract(s * 11.3))), 0.35 * crisp);
+
+    // brighter at the bottom of each opening — light spilling off the sill
+    float inner = mix(1.06, 0.85, smoothstep(0.0, 1.0, f.y));
+
+    vec3 nearWin = wcol * win * lit * glow * inner * 0.95;
+
+    /* ---- concrete ---- */
     vec3 col = uBase * (0.55 + 0.45 * smoothstep(0.0, 34.0, v));
+    col *= 1.0 - sill * 0.30 * side * detail;
+
+    // corner piers give the mass an edge
+    float edgeDist = min(vHalf.x - abs(vLocal.x), vHalf.z - abs(vLocal.z));
+    float pier = 1.0 - smoothstep(0.0, 0.5, edgeDist);
+    col *= 1.0 - pier * 0.45 * detail;
+
+    // parapet at the roof line
+    float parapet = 1.0 - smoothstep(0.0, 0.8, vHalf.y - vLocal.y);
+    col = mix(col, col * 0.45, parapet * 0.85 * detail);
+
+    // grime where the street meets the wall
+    col *= 1.0 - 0.30 * smoothstep(1.4, 0.0, v);
 
     // west faces catch the last of the sun
     float sun = max(dot(N, normalize(uSunDir)), 0.0);
-    col += uSunCol * pow(sun, 4.0) * 0.10;
+    float sun2 = sun * sun;
+    col += uSunCol * sun2 * sun2 * 0.12;
 
-    col += mix(farWin, nearWin, detail);
+    // shopfronts at street level — the only light at eye height
+    float shop = smoothstep(3.8, 3.2, v) * side;
+    float shopLit = step(0.35, hash21(id * 2.1 + s * 13.0));
+    float shopBay = mix(1.0, mix(0.4, 1.0, step(0.35, fract(u / 3.1))), crisp);
+    col += vec3(1.0, 0.66, 0.38) * shop * (0.03 + 0.11 * shopLit) * shopBay * detail;
+
+    col += nearWin;
+
+    // cool rim so silhouettes separate from the fog instead of merging into it
+    float ndv = 1.0 - max(dot(N, V), 0.0);
+    col += vec3(0.20, 0.22, 0.30) * ndv * ndv * ndv * 0.45;
 
     // floor slab lines
-    float slab = smoothstep(0.94, 1.0, fract(v / 3.0));
-    col *= 1.0 - slab * 0.22 * detail;
+    float slab = smoothstep(0.94, 1.0, fract(v / pitchY));
+    col *= 1.0 - slab * 0.18 * crisp;
 
-    float fog = 1.0 - exp(-pow(vDepth * 0.020, 2.0));
+    float fz = vDepth * 0.017;
+    float fog = 1.0 - exp(-fz * fz);
     col = mix(col, uFog, clamp(fog, 0.0, 1.0));
 
     gl_FragColor = vec4(col, 1.0);
@@ -277,8 +350,14 @@ export function City({ density = 1 }: { density?: number }) {
 
   useFrame((state) => {
     const t = state.clock.elapsedTime;
-    if (materialRef.current) {
-      materialRef.current.uniforms.uFog.value.set("#17161a");
+    const mat = materialRef.current;
+    if (mat) {
+      mat.uniforms.uFog.value.set("#17161a");
+      // metres covered by one vertical pixel at one metre of depth
+      const cam = state.camera as THREE.PerspectiveCamera;
+      const resY = state.size.height * state.viewport.dpr;
+      const tan = Math.tan(THREE.MathUtils.degToRad(cam.fov) / 2);
+      mat.uniforms.uMpp.value = (2 * tan) / resY;
     }
     if (beaconMat.current) {
       beaconMat.current.uniforms.uTime.value = t;
@@ -294,9 +373,10 @@ export function City({ density = 1 }: { density?: number }) {
           fragmentShader={cityFragment}
           uniforms={{
             uFog: { value: new THREE.Color("#17161a") },
-            uBase: { value: new THREE.Color("#121216") },
+            uBase: { value: new THREE.Color("#1b1b21") },
             uSunCol: { value: new THREE.Color("#ff6b2c") },
             uSunDir: { value: new THREE.Vector3(0.16, 0.06, -1).normalize() },
+            uMpp: { value: 0.0012 },
           }}
         />
       </instancedMesh>
