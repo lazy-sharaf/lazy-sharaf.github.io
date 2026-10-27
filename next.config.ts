@@ -1,13 +1,24 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  cacheComponents: true,
-  partialPrefetching: true,
+  /**
+   * GitHub Pages only serves files, so the whole site is exported at build
+   * time. That rules out `cacheComponents` and `partialPrefetching` — PPR
+   * cannot be enabled in export mode — which costs nothing here: every route
+   * was already fully static, with no server actions or route handlers to lose.
+   */
+  output: "export",
+
+  /** Pages resolves `/case/the-wildcard/` to that directory's index.html. */
+  trailingSlash: true,
+
   devIndicators: false,
+
   // Next only ships the dev client to origins it trusts. Without this, a phone
   // hitting the LAN address gets server HTML with no client bundle: no
   // hydration, no 3D, no menu.
   allowedDevOrigins: ["192.168.0.130", "192.168.0.37", "*.local"],
+
   turbopack: {
     root: __dirname,
     rules: {
