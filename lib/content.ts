@@ -95,6 +95,14 @@ export type Recognition = {
 
 export const recognitions: Recognition[] = [
   {
+    org: "NASA",
+    short: "NASA",
+    year: "2026",
+    kind: "Letter of Recognition",
+    image: "/recognitions/nasa.jpg",
+    note: "Letter of appreciation from the National Aeronautics and Space Administration for a vulnerability reported under NASA's Vulnerability Disclosure Policy.",
+  },
+  {
     org: "World Health Organization",
     short: "WHO",
     year: "2024",
@@ -439,7 +447,7 @@ export const indexEntries: IndexEntry[] = [
   {
     path: "~/recognition",
     title: "Recognition",
-    note: "WHO · UNESCO · UNICEF · U.S. DoE · Sheffield · York",
+    note: "NASA · WHO · UNESCO · UNICEF · U.S. DoE · Sheffield · York",
     count: "08 entries",
     href: "#record",
   },
