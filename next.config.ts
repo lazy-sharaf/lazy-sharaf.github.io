@@ -12,6 +12,12 @@ const nextConfig: NextConfig = {
   /** Pages resolves `/case/the-wildcard/` to that directory's index.html. */
   trailingSlash: true,
 
+  // Pin the upgrade policy: check stable installs against published security
+  // advisories and recommend a safe upgrade when one applies.
+  experimental: {
+    agentUpgrade: "security",
+  },
+
   devIndicators: false,
 
   // Next only ships the dev client to origins it trusts. Without this, a phone
