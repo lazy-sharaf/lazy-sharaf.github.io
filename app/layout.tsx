@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { site } from "@/lib/content";
-import { Chrome } from "@/components/dom/Chrome";
+import { SiteChrome } from "@/components/dom/SiteChrome";
 import { SmoothScroll } from "@/components/providers/SmoothScroll";
 import { SceneMount } from "@/components/three/SceneMount";
 import { WildcardCursor } from "@/components/ui/WildcardCursor";
@@ -106,7 +106,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Loader />
         <SceneMount />
         <WildcardCursor />
-        <Chrome />
+        <SiteChrome />
         <main id="main" className="relative z-10">
           {children}
         </main>

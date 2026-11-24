@@ -1,12 +1,18 @@
 "use client";
 
 import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 import Lenis from "lenis";
 import { computeScroll, scrollState } from "@/lib/scroll";
 import { isBootLocked, onBootLock } from "@/lib/boot";
 
 export function SmoothScroll() {
+  const pathname = usePathname() ?? "";
+  const reading = pathname === "/writeup" || pathname.startsWith("/writeup/");
+
   useEffect(() => {
+    if (reading) return;
+
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     scrollState.reduced = reduced;
 
@@ -73,7 +79,7 @@ export function SmoothScroll() {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
-  }, []);
+  }, [reading]);
 
   return null;
 }

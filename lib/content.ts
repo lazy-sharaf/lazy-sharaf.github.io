@@ -52,37 +52,47 @@ export const site = {
   },
 } as const;
 
-export type CaseStudy = {
+/** Full writeups, one card each, in the homepage Writeups section. */
+export type Writeup = {
   id: string;
   codename: string;
-  target: string;
-  program: string;
-  severity: "Critical" | "High" | "Medium" | "Low";
-  year: string;
-  outcome: string;
+  category: string;
   oneLiner: string;
-  stats: { value: string; unit: string; label: string }[];
   href: string;
-  external: boolean;
+  readLabel: string;
+  meta: { label: string; value: string }[];
+  badge?: string;
 };
 
-export const featuredCase: CaseStudy = {
-  id: "CASE 001",
-  codename: "How I Hacked a Live Chatbot",
-  target: "Live customer support chatbot",
-  program: "Private HackerOne program",
-  severity: "Critical",
-  year: "2026",
-  outcome: "First 4-digit bounty",
-  oneLiner: "One `+` in an MQTT topic string.",
-  stats: [
-    { value: "88", unit: "messages", label: "received" },
-    { value: "10", unit: "sessions", label: "not mine" },
-    { value: "03", unit: "minutes", label: "before I stopped" },
-  ],
-  href: "/case/the-wildcard",
-  external: false,
-};
+export const writeups: Writeup[] = [
+  {
+    id: "CASE 001",
+    codename: "How I Hacked a Live Chatbot",
+    category: "Bug bounty · MQTT",
+    oneLiner: "One `+` in an MQTT topic string.",
+    href: "/writeup/how-i-hacked-a-live-chatbot",
+    readLabel: "Read the writeup",
+    meta: [
+      { label: "Target", value: "Live support chatbot" },
+      { label: "Severity", value: "Critical" },
+      { label: "Outcome", value: "First 4-digit bounty" },
+    ],
+  },
+  {
+    id: "CASE 002",
+    codename: "The signature was valid. The code wasn't.",
+    category: "CTF · RSA / Brainfuck",
+    oneLiner: "A valid signature, a different offset, the flag.",
+    href: "/writeup/the-signature-was-valid-the-code-wasnt",
+    readLabel: "Read the writeup",
+    meta: [
+      { label: "Challenge", value: "Intigriti 1126" },
+      { label: "Protocol", value: "Custom · RSA-2048" },
+      { label: "Outcome", value: "Flag captured" },
+    ],
+    badge: "EMBARGOED · local only",
+  },
+];
 
 export type Recognition = {
   org: string;
@@ -487,11 +497,11 @@ export const indexEntries: IndexEntry[] = [
     href: "#ethics",
   },
   {
-    path: "~/case-001",
-    title: "The Wildcard",
-    note: "Critical MQTT authorisation flaw · first 4-digit bounty",
-    count: "01 entry",
-    href: "#case",
+    path: "~/writeups",
+    title: "Writeups",
+    note: "The Wildcard · Super Fast Server · how the bugs were found",
+    count: "02 entries",
+    href: "#writeup",
   },
 ];
 
@@ -517,7 +527,7 @@ export const sections: Section[] = [
   { id: "certifications", label: "Certifications", number: "06", path: "~/certs" },
   { id: "experience", label: "Experience", number: "07", path: "~/cv" },
   { id: "ethics", label: "Ethics", number: "08", path: "~/ethics" },
-  { id: "case", label: "Writeup", number: "09", path: "~/writeup" },
+  { id: "writeup", label: "Writeups", number: "09", path: "~/writeups" },
   { id: "contact", label: "Contact", number: "10", path: "~/contact" },
 ];
 
@@ -531,7 +541,7 @@ export const nav = sections.map(({ id, label }) => ({ id, label }));
 export const navPrimary = [
   { id: "about", label: "about" },
   { id: "record", label: "record" },
-  { id: "case", label: "case 001" },
+  { id: "writeup", label: "writeups" },
   { id: "tooling", label: "projects" },
   { id: "experience", label: "cv" },
   { id: "contact", label: "contact" },

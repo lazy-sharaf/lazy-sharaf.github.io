@@ -4,7 +4,7 @@ import { IndexSection } from "@/components/dom/IndexSection";
 import { About } from "@/components/dom/About";
 import { Skills } from "@/components/dom/Skills";
 import { DisclosureRecord } from "@/components/dom/DisclosureRecord";
-import { CaseWildcard } from "@/components/dom/CaseWildcard";
+import { Writeups } from "@/components/dom/Writeups";
 import { Tooling } from "@/components/dom/Tooling";
 import { Competitions } from "@/components/dom/Competitions";
 import { Certifications } from "@/components/dom/Certifications";
@@ -30,7 +30,7 @@ export default function Home() {
       <Certifications />
       <Experience />
       <Ethics />
-      <CaseWildcard />
+      <Writeups />
       <Contact />
     </>
   );

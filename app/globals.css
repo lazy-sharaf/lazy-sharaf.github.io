@@ -818,6 +818,32 @@ section[id] {
   background: rgba(232, 228, 220, 0.035);
 }
 
+/* ── Writeup cards ─────────────────────────────────────── */
+
+.wcard {
+  min-height: 24rem;
+}
+
+.wcard > .wcard-meta {
+  margin-top: auto;
+}
+
+.wcard-badge {
+  border: 1px solid rgba(255, 107, 44, 0.32);
+  color: var(--signal);
+  padding: 0.15rem 0.45rem;
+  letter-spacing: 0.08em;
+  font-size: 0.6rem;
+}
+
+.wcard-arrow {
+  transition: transform 420ms var(--ease-machine);
+}
+
+.wcard:hover .wcard-arrow {
+  transform: translateX(4px);
+}
+
 /* ── Link underline ────────────────────────────────────── */
 
 .ul-link {
