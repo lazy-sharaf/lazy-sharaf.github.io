@@ -78,20 +78,6 @@ export const writeups: Writeup[] = [
       { label: "Outcome", value: "First 4-digit bounty" },
     ],
   },
-  {
-    id: "CASE 002",
-    codename: "The signature was valid. The code wasn't.",
-    category: "CTF · RSA / Brainfuck",
-    oneLiner: "A valid signature, a different offset, the flag.",
-    href: "/writeup/the-signature-was-valid-the-code-wasnt",
-    readLabel: "Read the writeup",
-    meta: [
-      { label: "Challenge", value: "Intigriti 1126" },
-      { label: "Protocol", value: "Custom · RSA-2048" },
-      { label: "Outcome", value: "Flag captured" },
-    ],
-    badge: "EMBARGOED · local only",
-  },
 ];
 
 export type Recognition = {
@@ -499,8 +485,8 @@ export const indexEntries: IndexEntry[] = [
   {
     path: "~/writeups",
     title: "Writeups",
-    note: "The Wildcard · Super Fast Server · how the bugs were found",
-    count: "02 entries",
+    note: "The Wildcard · how the bug was found",
+    count: "01 entry",
     href: "#writeup",
   },
 ];

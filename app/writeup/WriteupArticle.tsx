@@ -25,7 +25,7 @@ export type WriteupArticleProps = {
   sourceFile: string;
   /** Small label above the title, e.g. "CTF writeup · web & reversing". */
   eyebrow: string;
-  /** Chip in the masthead, e.g. "Intigriti 1126". */
+  /** Chip in the masthead, e.g. "Private program". */
   chip: string;
   /**
    * Hero subtitle. When provided, the markdown's first standalone bold line

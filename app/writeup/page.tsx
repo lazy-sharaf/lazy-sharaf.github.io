@@ -105,7 +105,7 @@ export default function WriteupIndex() {
               </div>
               <div>
                 <dt>Disciplines</dt>
-                <dd>web · MQTT · crypto</dd>
+                <dd>web · MQTT</dd>
               </div>
               <div>
                 <dt>Year</dt>
